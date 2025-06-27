@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  dummy_backend:
+    build:
+      context: .
+      dockerfile: Dummy_Backend/Dockerfile
+    container_name: dummy_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - Dummy_Backend/.env
+    volumes:
+      - ./Dummy_Backend:/app/Dummy_Backend
+    restart: unless-stopped
+
+  monitor_service:
+    build:
+      context: .
+      dockerfile: Monitor_Service/Dockerfile
+    container_name: monitor_service
+    depends_on:
+      - dummy_backend
+    env_file:
+      - Monitor_Service/.env
+    volumes:
+      - ./Monitor_Service:/app/Monitor_Service
+    restart: unless-stopped
